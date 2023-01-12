@@ -5,17 +5,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 
-import { FeedToggle, ArticlePreview, PopularTags } from "components";
+import { FeedToggle, ArticlePreview, PopularTags, Banner } from "components";
 import { Article } from "types";
-
-const Banner = (): JSX.Element => (
-  <div className="banner">
-    <div className="container">
-      <h1 className="logo-font">conduit</h1>
-      <p>A place to share your knowledge.</p>
-    </div>
-  </div>
-);
 
 type ArticleResponse = {
   articles: Article[];
