@@ -5,49 +5,10 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 
-import { FeedToggle, ArticlePreview } from "components";
+import { FeedToggle, PopularTags, Banner, Pagination } from "components/home";
+
+import { ArticlePreview } from "components/shared";
 import { Article } from "types";
-
-const Banner = (): JSX.Element => (
-  <div className="banner">
-    <div className="container">
-      <h1 className="logo-font">conduit</h1>
-      <p>A place to share your knowledge.</p>
-    </div>
-  </div>
-);
-
-const PopularTags = () => (
-  <>
-    <p>Popular Tags</p>
-    <div className="tag-list">
-      <Link href="" className="tag-pill tag-default">
-        programming
-      </Link>
-      <Link href="" className="tag-pill tag-default">
-        javascript
-      </Link>
-      <Link href="" className="tag-pill tag-default">
-        emberjs
-      </Link>
-      <Link href="" className="tag-pill tag-default">
-        angularjs
-      </Link>
-      <Link href="" className="tag-pill tag-default">
-        react
-      </Link>
-      <Link href="" className="tag-pill tag-default">
-        mean
-      </Link>
-      <Link href="" className="tag-pill tag-default">
-        node
-      </Link>
-      <Link href="" className="tag-pill tag-default">
-        rails
-      </Link>
-    </div>
-  </>
-);
 
 type ArticleResponse = {
   articles: Article[];
@@ -59,20 +20,9 @@ const fetcher = (url: string, method: string) =>
 
 const URL_GET_ARTICLES = "/articles.json?";
 
-type Pagination = {
-  offset: number;
-  currentPage: number;
-  limit: number;
-};
-
 const Home: NextPage = () => {
   const router = useRouter();
   const global = router.query?.global === "true";
-  const [pagination, setPagination] = useState<Pagination>({
-    offset: 0,
-    currentPage: 1,
-    limit: 10,
-  });
 
   const { data, error, isLoading } = useSWR<ArticleResponse>(
     URL_GET_ARTICLES + (global ? "global=true" : ""),
@@ -99,43 +49,18 @@ const Home: NextPage = () => {
 
               {isLoading && <div>Loading</div>}
               {data?.articles.map((article) => (
-                <ArticlePreview article={article} />
+                <ArticlePreview article={article} key={article.slug} />
               ))}
 
               <div>
-                <nav>
-                  <ul className="pagination">
-                    {data?.articlesCount &&
-                      new Array(
-                        parseInt(
-                          (data?.articlesCount / pagination.limit).toString()
-                        ) + 1
-                      )
-                        .fill(0)
-                        .map((_, n) => (
-                          <li
-                            className={`page-item ${
-                              pagination.currentPage == n + 1 ? "active" : ""
-                            }`}
-                            key={`page${n}`}
-                          >
-                            <Link
-                              className={`page-link `}
-                              href=""
-                              shallow
-                              onClick={() => {
-                                setPagination((prev) => ({
-                                  ...prev,
-                                  currentPage: n + 1,
-                                }));
-                              }}
-                            >
-                              {n + 1}
-                            </Link>
-                          </li>
-                        ))}
-                  </ul>
-                </nav>
+                {data?.articles && data.articlesCount ? (
+                  <Pagination
+                    articles={data?.articles}
+                    articlesCount={data?.articlesCount}
+                  />
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
 
