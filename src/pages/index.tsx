@@ -5,7 +5,9 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 
-import { FeedToggle, ArticlePreview, PopularTags, Banner } from "components";
+import { FeedToggle, PopularTags, Banner, Pagination } from "components/home";
+
+import { ArticlePreview } from "components/shared";
 import { Article } from "types";
 
 type ArticleResponse = {
@@ -18,20 +20,9 @@ const fetcher = (url: string, method: string) =>
 
 const URL_GET_ARTICLES = "/articles.json?";
 
-type Pagination = {
-  offset: number;
-  currentPage: number;
-  limit: number;
-};
-
 const Home: NextPage = () => {
   const router = useRouter();
   const global = router.query?.global === "true";
-  const [pagination, setPagination] = useState<Pagination>({
-    offset: 0,
-    currentPage: 1,
-    limit: 10,
-  });
 
   const { data, error, isLoading } = useSWR<ArticleResponse>(
     URL_GET_ARTICLES + (global ? "global=true" : ""),
@@ -62,39 +53,14 @@ const Home: NextPage = () => {
               ))}
 
               <div>
-                <nav>
-                  <ul className="pagination">
-                    {data?.articlesCount &&
-                      new Array(
-                        parseInt(
-                          (data?.articlesCount / pagination.limit).toString()
-                        ) + 1
-                      )
-                        .fill(0)
-                        .map((_, n) => (
-                          <li
-                            className={`page-item ${
-                              pagination.currentPage == n + 1 ? "active" : ""
-                            }`}
-                            key={`page${n}`}
-                          >
-                            <Link
-                              className={`page-link `}
-                              href=""
-                              shallow
-                              onClick={() => {
-                                setPagination((prev) => ({
-                                  ...prev,
-                                  currentPage: n + 1,
-                                }));
-                              }}
-                            >
-                              {n + 1}
-                            </Link>
-                          </li>
-                        ))}
-                  </ul>
-                </nav>
+                {data?.articles && data.articlesCount ? (
+                  <Pagination
+                    articles={data?.articles}
+                    articlesCount={data?.articlesCount}
+                  />
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
 
