@@ -1,29 +1,17 @@
+import { usePagination } from "contexts/PaginationContex";
 import Link from "next/link";
-import React, { useState } from "react";
-import { Article } from "types";
 
 type Props = {
-  articles: Article[];
   articlesCount: number;
 };
 
-type Paginate = {
-  offset: number;
-  currentPage: number;
-  limit: number;
-};
-
-const Pagination = ({ articles, articlesCount }: Props) => {
-  const [pagination, setPagination] = useState<Paginate>({
-    offset: 0,
-    currentPage: 1,
-    limit: 10,
-  });
+const Pagination = ({ articlesCount }: Props) => {
+  const { setPagination, ...pagination } = usePagination();
 
   return (
     <nav>
       <ul className="pagination">
-        {articlesCount &&
+        {articlesCount > 0 &&
           new Array(parseInt((articlesCount / pagination.limit).toString()) + 1)
             .fill(0)
             .map((_, n) => (
@@ -38,10 +26,11 @@ const Pagination = ({ articles, articlesCount }: Props) => {
                   href=""
                   shallow
                   onClick={() => {
-                    setPagination((prev) => ({
-                      ...prev,
+                    setPagination({
+                      ...pagination,
                       currentPage: n + 1,
-                    }));
+                      offset: pagination.limit * n,
+                    });
                   }}
                 >
                   {n + 1}
