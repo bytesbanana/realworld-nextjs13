@@ -17,3 +17,9 @@ export type Article = {
   favoritesCount: number;
   author: Author;
 };
+
+export type Paginate = {
+  offset: number;
+  currentPage: number;
+  limit: number;
+};
