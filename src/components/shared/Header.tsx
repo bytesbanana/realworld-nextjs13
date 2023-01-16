@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const Header = (): JSX.Element => {
@@ -26,9 +27,9 @@ const Header = (): JSX.Element => {
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="">
+            <Link className="nav-link" href="/login">
               Sign in
-            </a>
+            </Link>
           </li>
           <li className="nav-item">
             <a className="nav-link" href="">
