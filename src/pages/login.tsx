@@ -1,19 +1,14 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { FormEvent, FormEventHandler, useState } from "react";
+import React, { FormEvent, useState } from "react";
+
+import { mutate } from "swr";
+import { ErrorResponse, Errors } from "types/response";
 import { API_BASE_URL } from "utils/constant";
 
 interface LoginFormData {
   email: string;
   password: string;
-}
-
-interface ErrorResponse {
-  errors: Errors;
-}
-
-interface Errors {
-  [key: string]: string[];
 }
 
 const LoginPage = () => {
@@ -22,7 +17,7 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState<Errors>();
+  const [errors, setErrors] = useState<Errors | undefined>();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,11 +33,15 @@ const LoginPage = () => {
       headers: { "Content-type": "application/json; charset=UTF-8" },
     });
 
+    const data = await response.json();
+
     if (response.ok) {
-      setErrors(null);
+      setErrors(undefined);
+      window.localStorage.setItem("user", JSON.stringify(data));
+      mutate("user", data);
       router.push("/");
     } else {
-      const errResponse = (await response.json()) as ErrorResponse;
+      const errResponse = data as ErrorResponse;
       setErrors(errResponse.errors);
     }
   };

@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import Link from "next/link";
 import React from "react";
-import { Article } from "types";
+import { Article } from "types/article";
 
 interface Props {
   article: Article;
