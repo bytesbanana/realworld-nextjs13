@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { FormEvent, useState } from "react";
+import { FormEvent, useState, useCallback, ChangeEventHandler } from "react";
 
 import { mutate } from "swr";
 import { ErrorResponse, Errors } from "types/response";
@@ -19,8 +19,9 @@ const LoginPage = () => {
   });
   const [errors, setErrors] = useState<Errors | undefined>();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setErrors(undefined);
 
     if (!router.isReady) return;
 
@@ -29,14 +30,12 @@ const LoginPage = () => {
       body: JSON.stringify({
         user: form,
       }),
-
       headers: { "Content-type": "application/json; charset=UTF-8" },
     });
 
     const data = await response.json();
 
     if (response.ok) {
-      setErrors(undefined);
       window.localStorage.setItem("user", JSON.stringify(data));
       mutate("user", data);
       router.push("/");
@@ -45,6 +44,16 @@ const LoginPage = () => {
       setErrors(errResponse.errors);
     }
   };
+
+  const handleEmailChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (e) => setForm((p) => ({ ...p, email: e.target.value })),
+    []
+  );
+
+  const handlePwdChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (e) => setForm((p) => ({ ...p, password: e.target.value })),
+    []
+  );
 
   return (
     <>
@@ -79,9 +88,7 @@ const LoginPage = () => {
                     type="text"
                     placeholder="Email"
                     value={form.email}
-                    onChange={(e) =>
-                      setForm((p) => ({ ...p, email: e.target.value }))
-                    }
+                    onChange={handleEmailChange}
                   />
                 </fieldset>
                 <fieldset className="form-group">
@@ -90,9 +97,7 @@ const LoginPage = () => {
                     type="password"
                     placeholder="Password"
                     value={form.password}
-                    onChange={(e) =>
-                      setForm((p) => ({ ...p, password: e.target.value }))
-                    }
+                    onChange={handlePwdChange}
                   />
                 </fieldset>
                 <button

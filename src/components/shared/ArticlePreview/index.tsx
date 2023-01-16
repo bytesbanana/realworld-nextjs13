@@ -1,13 +1,18 @@
 import dayjs from "dayjs";
 import Link from "next/link";
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import { Article } from "types/article";
+import useSwr from "swr";
+import storage from "fetcher/storage";
+import { useRouter } from "next/router";
 
 interface Props {
   article: Article;
 }
 
 export const ArticlePreview = ({ article }: Props) => {
+  const { data: currentUser } = useSwr("user", storage);
+
   return (
     <div className="article-preview" key={article.slug}>
       <div className="article-meta">
@@ -15,7 +20,7 @@ export const ArticlePreview = ({ article }: Props) => {
           <img src={article.author?.image} />
         </Link>
         <div className="info">
-          <Link href="" className="author">
+          <Link href={"/profile/" + article.author.username} className="author">
             {article.author?.username}
           </Link>
           <span className="date">
@@ -26,7 +31,10 @@ export const ArticlePreview = ({ article }: Props) => {
           <i className="ion-heart"></i> {article.favoritesCount}
         </button>
       </div>
-      <Link href="" className="preview-link">
+      <Link
+        href={currentUser ? "/article/" + article.slug : "/login"}
+        className="preview-link"
+      >
         <h1>{article.title}</h1>
         <p>{article.description}</p>
         <span>Read more...</span>
