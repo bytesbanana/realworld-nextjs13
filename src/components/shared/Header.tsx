@@ -1,41 +1,83 @@
+import storage from "fetcher/storage";
 import Link from "next/link";
 import React from "react";
+import useSWR from "swr";
+import { UserResponse } from "types/response";
+import ActiveLink from "./ActiveLink";
 
-const Header = (): JSX.Element => {
+const Header = () => {
+  const { data: currentUser } = useSWR<UserResponse>("user", storage);
+
   return (
     <nav className="navbar navbar-light">
       <div className="container">
-        <a className="navbar-brand" href="index.html">
+        <Link className="navbar-brand" href="/">
           conduit
-        </a>
+        </Link>
         <ul className="nav navbar-nav pull-xs-right">
           <li className="nav-item">
-            <a className="nav-link active" href="">
+            <ActiveLink className="nav-link" href="/" activeClassName="active">
               Home
-            </a>
+            </ActiveLink>
           </li>
-          <li className="nav-item">
-            <a className="nav-link" href="">
-              {" "}
-              <i className="ion-compose"></i>&nbsp;New Article{" "}
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="">
-              {" "}
-              <i className="ion-gear-a"></i>&nbsp;Settings{" "}
-            </a>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" href="/login">
-              Sign in
-            </Link>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="">
-              Sign up
-            </a>
-          </li>
+          {currentUser && (
+            <>
+              <li className="nav-item">
+                <ActiveLink
+                  className="nav-link"
+                  href="/editor"
+                  activeClassName="active"
+                >
+                  {" "}
+                  <i className="ion-compose"></i>&nbsp;New Article{" "}
+                </ActiveLink>
+              </li>
+              <li className="nav-item">
+                <ActiveLink
+                  className="nav-link"
+                  href="/settings"
+                  activeClassName="active"
+                >
+                  <i className="ion-gear-a"></i>&nbsp;Settings{" "}
+                </ActiveLink>
+              </li>
+              <li className="nav-item">
+                <ActiveLink
+                  className="nav-link"
+                  href="/profile/chivas23_01"
+                  activeClassName="active"
+                >
+                  <img
+                    className="user-pic"
+                    src="https://api.realworld.io/images/smiley-cyrus.jpeg"
+                  />
+                  {currentUser.user.username}
+                </ActiveLink>
+              </li>
+            </>
+          )}
+          {!currentUser && (
+            <>
+              <li className="nav-item">
+                <ActiveLink
+                  className="nav-link"
+                  href="/login"
+                  activeClassName="active"
+                >
+                  Sign in
+                </ActiveLink>
+              </li>
+              <li className="nav-item">
+                <ActiveLink
+                  className="nav-link"
+                  href="/register"
+                  activeClassName="active"
+                >
+                  Sign up
+                </ActiveLink>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </nav>

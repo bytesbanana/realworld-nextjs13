@@ -1,4 +1,5 @@
 import { Article } from "./article";
+import { User } from "./user";
 
 export type ArticleResponse = {
   articles: Article[];
@@ -7,6 +8,10 @@ export type ArticleResponse = {
 
 export interface ErrorResponse {
   errors: Errors;
+}
+
+export interface UserResponse {
+  user: User;
 }
 
 export interface Errors {
