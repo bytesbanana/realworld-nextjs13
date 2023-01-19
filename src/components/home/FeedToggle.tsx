@@ -18,7 +18,7 @@ const FeedToggle = (props: Props = defaultProps) => {
         <li className="nav-item">
           <Link
             className={`nav-link ${props.globalFeed ? "" : "active"}`}
-            href=""
+            href="?global=false"
             shallow
           >
             Your Feed
