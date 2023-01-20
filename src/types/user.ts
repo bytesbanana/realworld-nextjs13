@@ -5,3 +5,7 @@ export type User = {
   bio?: string;
   image?: string;
 };
+
+export type StorageUser = {
+  user: User;
+};
