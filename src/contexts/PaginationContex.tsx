@@ -1,9 +1,5 @@
-import {
-    createContext, ReactNode,
-    useContext,
-    useState
-} from "react";
-import { Paginate } from "types";
+import { createContext, ReactNode, useContext, useState } from "react";
+import { Paginate } from "types/article";
 
 type PaginateContext = Paginate & {
   setPagination: (value: Paginate) => void;
