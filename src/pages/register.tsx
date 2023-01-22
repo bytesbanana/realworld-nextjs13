@@ -2,41 +2,43 @@ import { ErrorList } from "components/shared";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FormEvent, useState, useCallback, ChangeEventHandler } from "react";
-
+import React, {
+  ChangeEventHandler,
+  FormEvent,
+  useCallback,
+  useState,
+} from "react";
 import { mutate } from "swr";
 import { ErrorResponse, Errors } from "types/response";
 import { API_BASE_URL } from "utils/constant";
 
-interface LoginFormData {
+interface RegisterFormData {
   email: string;
+  username: string;
   password: string;
 }
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const router = useRouter();
-  const [form, setForm] = useState<LoginFormData>({
+  const [errors, setErrors] = useState<Errors | undefined>();
+  const [form, setForm] = useState<RegisterFormData>({
     email: "",
+    username: "",
     password: "",
   });
-  const [errors, setErrors] = useState<Errors | undefined>();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErrors(undefined);
 
-    if (!router.isReady) return;
+    if (!router) return;
 
-    const response = await fetch(`${API_BASE_URL}/users/login`, {
+    const response = await fetch(`${API_BASE_URL}/users`, {
       method: "POST",
-      body: JSON.stringify({
-        user: form,
-      }),
+      body: JSON.stringify({ user: form }),
       headers: { "Content-type": "application/json; charset=UTF-8" },
     });
-
     const data = await response.json();
-
     if (response.ok) {
       window.localStorage.setItem("user", JSON.stringify(data));
       mutate("user", data);
@@ -47,20 +49,15 @@ const LoginPage = () => {
     }
   };
 
-  const handleEmailChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    (e) => setForm((p) => ({ ...p, email: e.target.value })),
-    []
-  );
-
-  const handlePwdChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    (e) => setForm((p) => ({ ...p, password: e.target.value })),
+  const handleInputChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value })),
     []
   );
 
   return (
     <>
       <Head>
-        <title>Sign in - Conduit</title>
+        <title>Sign up - Conduit</title>
         <meta name="description" content="Next.js 13 + SWR realword demo" />
       </Head>
       <div className="auth-page">
@@ -69,7 +66,7 @@ const LoginPage = () => {
             <div className="col-md-6 offset-md-3 col-xs-12">
               <h1 className="text-xs-center">Sign in</h1>
               <p className="text-xs-center">
-                <Link href="/register">Need an account?</Link>
+                <Link href="/login">Already have an account?</Link>
               </p>
 
               {errors && <ErrorList errors={errors} />}
@@ -79,25 +76,37 @@ const LoginPage = () => {
                   <input
                     className="form-control form-control-lg"
                     type="text"
+                    placeholder="Username"
+                    name="username"
+                    value={form.username}
+                    onChange={handleInputChange}
+                  />
+                </fieldset>
+                <fieldset className="form-group">
+                  <input
+                    className="form-control form-control-lg"
+                    type="email"
+                    name="email"
                     placeholder="Email"
                     value={form.email}
-                    onChange={handleEmailChange}
+                    onChange={handleInputChange}
                   />
                 </fieldset>
                 <fieldset className="form-group">
                   <input
                     className="form-control form-control-lg"
                     type="password"
+                    name="password"
                     placeholder="Password"
                     value={form.password}
-                    onChange={handlePwdChange}
+                    onChange={handleInputChange}
                   />
                 </fieldset>
                 <button
                   className="btn btn-lg btn-primary pull-xs-right"
                   type="submit"
                 >
-                  Sign in
+                  Sign up
                 </button>
               </form>
             </div>
@@ -108,4 +117,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
