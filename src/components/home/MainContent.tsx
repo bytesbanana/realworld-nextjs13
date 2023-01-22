@@ -57,12 +57,12 @@ const MainContent = () => {
         articles.map((article) => (
           <ArticlePreview article={article} key={article.slug} />
         ))}
-      {!isLoading && articlesCount === 0 ? (
+      {!error && !isLoading && articlesCount === 0 ? (
         <div className="article-preview">No articles are here... yet.</div>
       ) : (
         <></>
       )}
-      {error && <div>Failed to load artciles.</div>}
+      {!isLoading && error && <div>Failed to load artciles.</div>}
 
       {isLoading && <div className="article-preview">Loading articles...</div>}
 
