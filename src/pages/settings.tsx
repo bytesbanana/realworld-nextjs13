@@ -30,7 +30,10 @@ const SettingPage = () => {
   const handleHandleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData((prevForm) => ({ ...prevForm, [e.target.name]: e.target.value }));
+    setFormData((prevForm) => ({
+      ...prevForm,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const onUpdateSubmit = async (e: FormEvent) => {
@@ -46,21 +49,17 @@ const SettingPage = () => {
     });
 
     if (!response.ok) return;
-    router.push("/profile/" + currentUser?.user.username);
+    const data = (await response.json()) as StorageUser;
+    window.localStorage.setItem("user", JSON.stringify(data));
+    mutate("user", data);
+    router.push("/profile/" + data.user.username);
   };
 
   useEffect(() => {
-    const { username, email, image } = currentUser?.user || {
-      username: "",
-      email: "",
-      image: "",
-    };
-
+    if (!currentUser?.user) return;
     setFormData((p) => ({
       ...p,
-      username,
-      email,
-      image,
+      ...currentUser.user,
     }));
   }, [currentUser]);
 
