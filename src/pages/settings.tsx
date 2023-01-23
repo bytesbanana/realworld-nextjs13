@@ -1,18 +1,23 @@
 import { useRouter } from "next/router";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 
 import storage from "fetcher/storage";
-import { StorageUser } from "types/user";
+import { User, StorageUser } from "types/user";
+import { API_BASE_URL } from "utils/constant";
+
+type FormData = Omit<User, "token"> & {
+  password: string;
+};
 
 const SettingPage = () => {
   const router = useRouter();
   const { data: currentUser } = useSWR<StorageUser>("user", storage);
 
-  const [form, setForm] = useState({
-    image: currentUser?.user.image || "",
-    username: currentUser?.user.username || "",
-    email: currentUser?.user.email || "",
+  const [formData, setFormData] = useState<FormData>({
+    image: "",
+    username: "",
+    email: "",
     password: "",
   });
 
@@ -25,14 +30,39 @@ const SettingPage = () => {
   const handleHandleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setForm((prevForm) => ({ ...prevForm, [e.target.name]: e.target.value }));
+    setFormData((prevForm) => ({ ...prevForm, [e.target.name]: e.target.value }));
   };
 
-  const onUpdateSubmit = (e: FormEvent) => {
+  const onUpdateSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const body = { user: form };
-    throw Error("Not implement yet");
+
+    const response = await fetch(`${API_BASE_URL}/user`, {
+      method: "PUT",
+      body: JSON.stringify({ user: formData }),
+      headers: {
+        Authorization: "Bearer " + currentUser?.user.token,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) return;
+    router.push("/profile/" + currentUser?.user.username);
   };
+
+  useEffect(() => {
+    const { username, email, image } = currentUser?.user || {
+      username: "",
+      email: "",
+      image: "",
+    };
+
+    setFormData((p) => ({
+      ...p,
+      username,
+      email,
+      image,
+    }));
+  }, [currentUser]);
 
   return (
     <div className="settings-page">
@@ -50,15 +80,18 @@ const SettingPage = () => {
                     placeholder="URL of profile picture"
                     name="image"
                     onChange={handleHandleInputChange}
+                    value={formData.image}
                   />
                 </fieldset>
                 <fieldset className="form-group">
                   <input
                     className="form-control form-control-lg"
                     type="text"
-                    placeholder="Your Name"
+                    placeholder="Username"
                     name="username"
+                    autoComplete="off"
                     onChange={handleHandleInputChange}
+                    value={formData.username}
                   />
                 </fieldset>
                 <fieldset className="form-group">
@@ -68,6 +101,7 @@ const SettingPage = () => {
                     placeholder="Short bio about you"
                     name="bio"
                     onChange={handleHandleInputChange}
+                    value={formData.bio}
                   ></textarea>
                 </fieldset>
                 <fieldset className="form-group">
@@ -76,7 +110,9 @@ const SettingPage = () => {
                     type="text"
                     placeholder="Email"
                     name="email"
+                    autoComplete="off"
                     onChange={handleHandleInputChange}
+                    value={formData.email}
                   />
                 </fieldset>
                 <fieldset className="form-group">
@@ -85,6 +121,7 @@ const SettingPage = () => {
                     type="password"
                     placeholder="Password"
                     name="password"
+                    autoComplete="off"
                     onChange={handleHandleInputChange}
                   />
                 </fieldset>
