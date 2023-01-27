@@ -3,8 +3,9 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 
 import storage from "fetcher/storage";
-import { User, StorageUser } from "types/user";
+import { User } from "types/user";
 import { API_BASE_URL } from "utils/constant";
+import { UserResponse } from "types/response";
 
 type FormData = Omit<User, "token"> & {
   password: string;
@@ -12,7 +13,7 @@ type FormData = Omit<User, "token"> & {
 
 const SettingPage = () => {
   const router = useRouter();
-  const { data: currentUser } = useSWR<StorageUser>("user", storage);
+  const { data: currentUser } = useSWR<User>("user", storage);
 
   const [formData, setFormData] = useState<FormData>({
     image: "",
@@ -43,23 +44,23 @@ const SettingPage = () => {
       method: "PUT",
       body: JSON.stringify({ user: formData }),
       headers: {
-        Authorization: "Bearer " + currentUser?.user.token,
+        Authorization: "Bearer " + currentUser?.token,
         "Content-Type": "application/json",
       },
     });
 
     if (!response.ok) return;
-    const data = (await response.json()) as StorageUser;
+    const data = (await response.json()) as UserResponse;
     window.localStorage.setItem("user", JSON.stringify(data));
     mutate("user", data);
     router.push("/profile/" + data.user.username);
   };
 
   useEffect(() => {
-    if (!currentUser?.user) return;
+    if (!currentUser) return;
     setFormData((p) => ({
       ...p,
-      ...currentUser.user,
+      ...currentUser,
     }));
   }, [currentUser]);
 
