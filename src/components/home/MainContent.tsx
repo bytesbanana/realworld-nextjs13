@@ -8,7 +8,7 @@ import restFetcher from "fetcher/rest";
 import { usePagination } from "contexts/PaginationContex";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { ArticleResponse } from "types/response";
+import { ArticlesResponse } from "types/response";
 
 const URL_GET_ARTICLES = `${API_BASE_URL}/articles`;
 const URL_GET_ARTICLES_FEED = `${API_BASE_URL}/articles/feed`;
@@ -35,7 +35,7 @@ const MainContent = () => {
       break;
   }
 
-  const { data, error, isLoading } = useSWR<ArticleResponse>(
+  const { data, error, isLoading } = useSWR<ArticlesResponse>(
     articlesFetchUrl,
     restFetcher
   );

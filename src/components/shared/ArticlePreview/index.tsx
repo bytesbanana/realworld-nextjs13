@@ -1,10 +1,12 @@
 import dayjs from "dayjs";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { Article } from "types/article";
 import useSwr from "swr";
 import storage from "fetcher/storage";
 import { User } from "types/user";
+import { API_BASE_URL } from "utils/constant";
+import { ArticleResponse } from "types/response";
 
 interface Props {
   article: Article;
@@ -12,6 +14,27 @@ interface Props {
 
 export const ArticlePreview = ({ article }: Props) => {
   const { data: currentUser } = useSwr<User>("user", storage);
+
+  const [favorited, setFavorited] = useState<boolean>(article.favorited)
+  const [favoritesCount, setFavoritesCount] = useState<number>(article.favoritesCount)
+
+  const toggleFavorite = async () => {
+
+    const response = await fetch(`${API_BASE_URL}/articles/${article.slug}/favorite`, {
+      method: favorited ? 'DELETE' : 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + currentUser?.token
+      }
+    })
+
+    if (response.ok) {
+      setFavorited((isFav) => !isFav)
+      setFavoritesCount((favCount) => {
+        if (favorited) return favCount - 1
+        return favCount + 1
+      })
+    }
+  }
 
   return (
     <div className="article-preview" key={article.slug}>
@@ -27,8 +50,8 @@ export const ArticlePreview = ({ article }: Props) => {
             {dayjs(article.createdAt).format("MMMM D, YYYY")}
           </span>
         </div>
-        <button className="btn btn-outline-primary btn-sm pull-xs-right">
-          <i className="ion-heart"></i> {article.favoritesCount}
+        <button className={`btn btn-outline-primary btn-sm pull-xs-right ${favorited ? "active" : ""}`} onClick={toggleFavorite}>
+          <i className="ion-heart"></i> {favoritesCount}
         </button>
       </div>
       <Link
