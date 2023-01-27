@@ -7,7 +7,7 @@ import { User } from "types/user";
 
 const Header = () => {
   const { data: currentUser } = useSWR<User>("user", storage);
-
+  
   return (
     <nav className="navbar navbar-light">
       <div className="container">

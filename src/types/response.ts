@@ -9,9 +9,13 @@ export interface Errors {
   [key: string]: string[];
 }
 
-export type ArticleResponse = {
+export type ArticlesResponse = {
   articles: Article[];
   articlesCount: number;
+};
+
+export type ArticleResponse = {
+  article: Article;
 };
 
 export interface UserResponse {
