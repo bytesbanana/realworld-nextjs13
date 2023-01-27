@@ -2,11 +2,11 @@ import storage from "fetcher/storage";
 import Link from "next/link";
 import React from "react";
 import useSWR from "swr";
-import { UserResponse } from "types/response";
 import ActiveLink from "./ActiveLink";
+import { User } from "types/user";
 
 const Header = () => {
-  const { data: currentUser } = useSWR<UserResponse>("user", storage);
+  const { data: currentUser } = useSWR<User>("user", storage);
 
   return (
     <nav className="navbar navbar-light">
@@ -51,7 +51,7 @@ const Header = () => {
                     className="user-pic"
                     src="https://api.realworld.io/images/smiley-cyrus.jpeg"
                   />
-                  {currentUser.user.username}
+                  {currentUser.username}
                 </ActiveLink>
               </li>
             </>

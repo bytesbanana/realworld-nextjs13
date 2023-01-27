@@ -7,9 +7,9 @@ const getHeaders = (): Record<string, string> | undefined => {
 
   const currentUser = JSON.parse(window.localStorage.user);
 
-  if (!!currentUser.user.token) {
+  if (!!currentUser.token) {
     return {
-      Authorization: `Token ${currentUser.user.token}`,
+      Authorization: `Token ${currentUser.token}`,
     };
   }
 };

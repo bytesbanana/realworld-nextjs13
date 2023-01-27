@@ -2,7 +2,7 @@ import storage from "fetcher/storage";
 import Link from "next/link";
 import React from "react";
 import useSWR from "swr";
-import { StorageUser } from "types/user";
+import { User } from "types/user";
 
 type Props = {
   globalFeed: boolean;
@@ -15,7 +15,7 @@ const defaultProps: Props = {
 };
 
 const FeedToggle = (props: Props = defaultProps) => {
-  const {data: currentUser} = useSWR<StorageUser>('user', storage)
+  const { data: currentUser } = useSWR<User>('user', storage)
 
   return (
     <div className="feed-toggle">

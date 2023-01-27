@@ -1,17 +1,17 @@
 import dayjs from "dayjs";
 import Link from "next/link";
-import React, { MouseEventHandler } from "react";
+import React from "react";
 import { Article } from "types/article";
 import useSwr from "swr";
 import storage from "fetcher/storage";
-import { useRouter } from "next/router";
+import { User } from "types/user";
 
 interface Props {
   article: Article;
 }
 
 export const ArticlePreview = ({ article }: Props) => {
-  const { data: currentUser } = useSwr("user", storage);
+  const { data: currentUser } = useSwr<User>("user", storage);
 
   return (
     <div className="article-preview" key={article.slug}>

@@ -6,6 +6,9 @@ export type User = {
   image?: string;
 };
 
-export type StorageUser = {
-  user: User;
-};
+export type Profile = {
+  username: string
+  bio: string
+  image: string
+  following: boolean
+}

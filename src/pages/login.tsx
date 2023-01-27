@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { FormEvent, useState, useCallback, ChangeEventHandler } from "react";
 
 import { mutate } from "swr";
-import { ErrorResponse, Errors } from "types/response";
+import { ErrorResponse, Errors, UserResponse } from "types/response";
 import { API_BASE_URL } from "utils/constant";
 
 interface LoginFormData {
@@ -38,8 +38,9 @@ const LoginPage = () => {
     const data = await response.json();
 
     if (response.ok) {
-      window.localStorage.setItem("user", JSON.stringify(data));
-      mutate("user", data);
+      const userResponse = (data as UserResponse)
+      window.localStorage.setItem("user", JSON.stringify(userResponse.user));
+      mutate("user", userResponse.user);
       router.push("/");
     } else {
       const errResponse = data as ErrorResponse;
