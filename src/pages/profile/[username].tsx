@@ -1,29 +1,77 @@
+import restFetcher from "fetcher/rest";
+import storage from "fetcher/storage";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import useSWR from "swr";
+import { ProfileResposne } from "types/response";
+import { User } from "types/user";
+import { API_BASE_URL } from "utils/constant";
+
+type RouterQuery = {
+  username: string;
+};
 
 const Profile = () => {
-  const router = useRouter()
-  const { username } = router.query
+  const router = useRouter();
+  const query = (router.query as RouterQuery) || { username: "" };
+  const { data: currentUser } = useSWR<User>("user", storage);
 
+  const { data, error, isLoading } = useSWR<ProfileResposne>(
+    `${API_BASE_URL}/profiles/${query.username}`,
+    restFetcher
+  );
 
+  const { username, bio, image } = data?.profile || {
+    username: "",
+    bio: "",
+    image: "https://api.realworld.io/images/smiley-cyrus.jpeg",
+  };
+
+  const renderProfileAction = () => {
+    if (currentUser?.username === username) {
+      return (
+        <Link
+          className="btn btn-sm btn-outline-secondary action-btn"
+          href="/settings"
+        >
+          <>
+            <i className="ion-gear-a"></i>
+            &nbsp; Edit Profile Settings
+          </>
+        </Link>
+      );
+    }
+
+    return (
+      <button className="btn btn-sm btn-outline-secondary action-btn">
+        <i className="ion-plus-round"></i>
+        &nbsp; {`Follow ${username}`}
+      </button>
+    );
+  };
 
   return (
     <div className="profile-page">
       <div className="user-info">
         <div className="container">
           <div className="row">
-            <div className="col-xs-12 col-md-10 offset-md-1">
-              <img src="http://i.imgur.com/Qr71crq.jpg" className="user-img" />
-              <h4>Eric Simons</h4>
-              <p>
-                Cofounder @GoThinkster, lived in Aol's HQ for a few months,
-                kinda looks like Peeta from the Hunger Games
-              </p>
-              <button className="btn btn-sm btn-outline-secondary action-btn">
-                <i className="ion-plus-round"></i>
-                &nbsp; Follow Eric Simons
-              </button>
-            </div>
+            {data && (
+              <div className="col-xs-12 col-md-10 offset-md-1">
+                <img src={image} className="user-img" />
+                <h4>{username}</h4>
+                <p>{bio}</p>
+                {renderProfileAction()}
+              </div>
+            )}
+            {isLoading && (
+              <div className="col-xs-12 col-md-10 offset-md-1">Loading ...</div>
+            )}
+            {error && (
+              <div className="col-xs-12 col-md-10 offset-md-1">
+                Failed to load profile
+              </div>
+            )}
           </div>
         </div>
       </div>
