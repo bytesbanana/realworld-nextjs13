@@ -44,7 +44,7 @@ const Header = () => {
               <li className="nav-item">
                 <ActiveLink
                   className="nav-link"
-                  href="/profile/chivas23_01"
+                  href={`/profile/${currentUser.username}`}
                   activeClassName="active"
                 >
                   <img
