@@ -1,68 +1,13 @@
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import useSWR, { mutate } from "swr";
+import React from "react";
 
-import storage from "fetcher/storage";
-import { User } from "types/user";
-import { API_BASE_URL } from "utils/constant";
-import { UserResponse } from "types/response";
-
-type FormData = Omit<User, "token"> & {
-  password: string;
-};
-
-const SettingPage = () => {
+const Settings = () => {
   const router = useRouter();
-  const { data: currentUser } = useSWR<User>("user", storage);
-
-  const [formData, setFormData] = useState<FormData>({
-    image: "",
-    username: "",
-    email: "",
-    password: "",
-  });
-
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
     router.push("/");
-    localStorage.removeItem("user");
-    mutate("user", undefined);
   };
-
-  const handleHandleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData((prevForm) => ({
-      ...prevForm,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const onUpdateSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    const response = await fetch(`${API_BASE_URL}/user`, {
-      method: "PUT",
-      body: JSON.stringify({ user: formData }),
-      headers: {
-        Authorization: "Bearer " + currentUser?.token,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) return;
-    const data = (await response.json()) as UserResponse;
-    window.localStorage.setItem("user", JSON.stringify(data));
-    mutate("user", data);
-    router.push("/profile/" + data.user.username);
-  };
-
-  useEffect(() => {
-    if (!currentUser) return;
-    setFormData((p) => ({
-      ...p,
-      ...currentUser,
-    }));
-  }, [currentUser]);
 
   return (
     <div className="settings-page">
@@ -71,27 +16,20 @@ const SettingPage = () => {
           <div className="col-md-6 offset-md-3 col-xs-12">
             <h1 className="text-xs-center">Your Settings</h1>
 
-            <form onSubmit={onUpdateSubmit}>
+            <form>
               <fieldset>
                 <fieldset className="form-group">
                   <input
                     className="form-control"
                     type="text"
                     placeholder="URL of profile picture"
-                    name="image"
-                    onChange={handleHandleInputChange}
-                    value={formData.image}
                   />
                 </fieldset>
                 <fieldset className="form-group">
                   <input
                     className="form-control form-control-lg"
                     type="text"
-                    placeholder="Username"
-                    name="username"
-                    autoComplete="off"
-                    onChange={handleHandleInputChange}
-                    value={formData.username}
+                    placeholder="Your Name"
                   />
                 </fieldset>
                 <fieldset className="form-group">
@@ -99,9 +37,6 @@ const SettingPage = () => {
                     className="form-control form-control-lg"
                     rows={8}
                     placeholder="Short bio about you"
-                    name="bio"
-                    onChange={handleHandleInputChange}
-                    value={formData.bio}
                   ></textarea>
                 </fieldset>
                 <fieldset className="form-group">
@@ -109,10 +44,6 @@ const SettingPage = () => {
                     className="form-control form-control-lg"
                     type="text"
                     placeholder="Email"
-                    name="email"
-                    autoComplete="off"
-                    onChange={handleHandleInputChange}
-                    value={formData.email}
                   />
                 </fieldset>
                 <fieldset className="form-group">
@@ -120,21 +51,19 @@ const SettingPage = () => {
                     className="form-control form-control-lg"
                     type="password"
                     placeholder="Password"
-                    name="password"
-                    autoComplete="off"
-                    onChange={handleHandleInputChange}
                   />
                 </fieldset>
-                <button
-                  className="btn btn-lg btn-primary pull-xs-right"
-                  type="submit"
-                >
+                <button className="btn btn-lg btn-primary pull-xs-right">
                   Update Settings
                 </button>
               </fieldset>
             </form>
             <hr />
-            <button className="btn btn-outline-danger" onClick={handleLogout}>
+            <button
+              type="button"
+              className="btn btn-outline-danger"
+              onClick={handleLogout}
+            >
               Or click here to logout.
             </button>
           </div>
@@ -144,4 +73,4 @@ const SettingPage = () => {
   );
 };
 
-export default SettingPage;
+export default Settings;

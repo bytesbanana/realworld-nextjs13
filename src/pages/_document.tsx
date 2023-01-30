@@ -1,11 +1,10 @@
-import React from "react";
 import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
   return (
     <Html>
       <Head>
-        <link rel="icon" href="/favicon.ico" />
+        <meta charSet="utf-8" />
         <link
           href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
           rel="stylesheet"
@@ -16,7 +15,6 @@ export default function Document() {
           rel="stylesheet"
           type="text/css"
         />
-        {/* Import the custom Bootstrap 4 theme from our hosted CDN  */}
         <link rel="stylesheet" href="//demo.productionready.io/main.css" />
       </Head>
       <body>
