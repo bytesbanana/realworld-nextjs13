@@ -5,10 +5,10 @@ import type { JWT } from "next-auth/jwt";
 /** Example on how to extend the built-in session types */
 declare module "next-auth" {
   interface Session {
-    user: User<{
+    user: User & {
       accessToken: string;
       bio?: string;
-    }>;
+    };
   }
   interface User extends User {
     accessToken: string;
