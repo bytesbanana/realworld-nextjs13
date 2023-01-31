@@ -3,21 +3,27 @@ import React from "react";
 import Layout from "components/Layout";
 import { MyAppProps } from "next/app";
 import { SessionProvider, useSession } from "next-auth/react";
+import { PageContextProvider } from "contexts/PageContext";
+import { ArticlesContextProvider } from "contexts/ArticleContext";
 
 const MyApp = ({ Component, pageProps }: MyAppProps) => {
   console.log("AUTH: ", Component.auth);
   return (
-    <SessionProvider session={pageProps.session}>
-      <Layout>
-        {Component?.auth ? (
-          <Auth>
-            <Component {...pageProps} />
-          </Auth>
-        ) : (
-          <Component {...pageProps} />
-        )}
-      </Layout>
-    </SessionProvider>
+    <PageContextProvider>
+      <ArticlesContextProvider>
+        <SessionProvider session={pageProps.session}>
+          <Layout>
+            {Component?.auth ? (
+              <Auth>
+                <Component {...pageProps} />
+              </Auth>
+            ) : (
+              <Component {...pageProps} />
+            )}
+          </Layout>
+        </SessionProvider>
+      </ArticlesContextProvider>
+    </PageContextProvider>
   );
 };
 

@@ -1,122 +1,92 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { useSession } from "next-auth/react";
+import Banner from "components/home/Banner";
+import FeedToggle from "components/home/FeedToggle";
+import Sidebar from "components/home/Sidebar";
+import TagAPI from "lib/api/tag";
+import ArticleList from "components/home/ArticleList";
+import useSWR from "swr";
+import { API_BASE_URL } from "lib/utils/constant";
+import { restFetcher } from "lib/fetcher/rest";
+import { ArticlesResponse } from "lib/types/articles";
+import { PageContext } from "contexts/PageContext";
+import { ArticleContext } from "contexts/ArticleContext";
 
-const Home = () => {
+interface Props {
+  tags: string[];
+}
+
+const Home = ({ tags }: Props) => {
   const { data: session } = useSession();
 
-  console.log(session)
+  const { pageIndex } = useContext(PageContext);
+  const { selectedTag } = useContext(ArticleContext);
+
+  const paramObj: Record<string, any> = {
+    limit: "10",
+    offset: ((pageIndex - 1) * 10).toString(),
+  };
+
+  if (selectedTag) {
+    paramObj.tag = selectedTag;
+  }
+
+  const searchParams = new URLSearchParams(paramObj);
+  const fetchUrl = `${API_BASE_URL}/articles`;
+
+  const {
+    data: articlesResponse,
+    isLoading: loadingArticles,
+    error: errorLoadArticles,
+  } = useSWR<ArticlesResponse>(
+    [`${fetchUrl}?${searchParams.toString()}`, session?.user.accessToken],
+    ([url, token]) => restFetcher(url, token)
+  );
 
   return (
     <div className="home-page">
-      <div className="banner">
-        <div className="container">
-          <h1 className="logo-font">conduit</h1>
-          <p>A place to share your knowledge.</p>
-        </div>
-      </div>
+      {!session && <Banner />}
 
       <div className="container page">
         <div className="row">
           <div className="col-md-9">
-            <div className="feed-toggle">
-              <ul className="nav nav-pills outline-active">
-                <li className="nav-item">
-                  <a className="nav-link disabled" href="">
-                    Your Feed
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link active" href="">
-                    Global Feed
-                  </a>
-                </li>
-              </ul>
-            </div>
+            {/* FEED TOGGLE */}
+            <FeedToggle />
+            {!loadingArticles && (
+              <>
+                {articlesResponse?.articles && (
+                  <ArticleList
+                    articles={articlesResponse.articles}
+                    articlesCount={articlesResponse.articlesCount}
+                  />
+                )}
+              </>
+            )}
 
-            <div className="article-preview">
-              <div className="article-meta">
-                <a href="profile.html">
-                  <img src="http://i.imgur.com/Qr71crq.jpg" />
-                </a>
-                <div className="info">
-                  <a href="" className="author">
-                    Eric Simons
-                  </a>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 29
-                </button>
-              </div>
-              <a href="" className="preview-link">
-                <h1>How to build webapps that scale</h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-              </a>
-            </div>
+            {loadingArticles && (
+              <div className="article-preview">Loading articles...</div>
+            )}
 
-            <div className="article-preview">
-              <div className="article-meta">
-                <a href="profile.html">
-                  <img src="http://i.imgur.com/N4VcUeJ.jpg" />
-                </a>
-                <div className="info">
-                  <a href="" className="author">
-                    Albert Pai
-                  </a>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 32
-                </button>
-              </div>
-              <a href="" className="preview-link">
-                <h1>
-                  The song you won't ever stop singing. No matter how hard you
-                  try.
-                </h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-              </a>
-            </div>
+            {errorLoadArticles && (
+              <div className="article-preview">Failed to fecth articles.</div>
+            )}
           </div>
 
           <div className="col-md-3">
-            <div className="sidebar">
-              <p>Popular Tags</p>
-
-              <div className="tag-list">
-                <a href="" className="tag-pill tag-default">
-                  programming
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  javascript
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  emberjs
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  angularjs
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  react
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  mean
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  node
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  rails
-                </a>
-              </div>
-            </div>
+            <Sidebar tags={tags} />
           </div>
         </div>
       </div>
     </div>
   );
+};
+
+Home.getInitialProps = async () => {
+  const tagResponse = await TagAPI.getAllTags();
+
+  return {
+    tags: tagResponse.tags,
+  };
 };
 
 export default Home;
