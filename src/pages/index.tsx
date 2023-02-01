@@ -20,19 +20,22 @@ const Home = ({ tags }: Props) => {
   const { data: session } = useSession();
 
   const { pageIndex } = useContext(PageContext);
-  const { selectedTag } = useContext(ArticleContext);
+  const { currentFeedType, selectedTag } = useContext(ArticleContext);
 
   const paramObj: Record<string, any> = {
     limit: "10",
     offset: ((pageIndex - 1) * 10).toString(),
   };
 
-  if (selectedTag) {
+  if (currentFeedType === "TAG") {
     paramObj.tag = selectedTag;
   }
 
   const searchParams = new URLSearchParams(paramObj);
-  const fetchUrl = `${API_BASE_URL}/articles`;
+  let fetchUrl = `${API_BASE_URL}/articles`;
+  if (currentFeedType === "YOUR") {
+    fetchUrl = `${API_BASE_URL}/articles/feed`;
+  }
 
   const {
     data: articlesResponse,

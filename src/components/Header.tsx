@@ -2,6 +2,7 @@ import { DEFAULT_USER_IMG_URL } from "lib/utils/constant";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect } from "react";
+import ActiveLink from "./ActiveLink";
 
 const Header = () => {
   const { data: session } = useSession();
@@ -9,56 +10,72 @@ const Header = () => {
   return (
     <nav className="navbar navbar-light">
       <div className="container">
-        <a className="navbar-brand" href="index.html">
+        <Link className="navbar-brand" href="/">
           conduit
-        </a>
+        </Link>
         <ul className="nav navbar-nav pull-xs-right">
           <li className="nav-item">
-            <a className="nav-link active" href="">
+            <ActiveLink className="nav-link" href="/" activeClassName="active">
               Home
-            </a>
+            </ActiveLink>
           </li>
 
           {session && (
             <>
               <li className="nav-item">
-                <a className="nav-link" href="">
+                <ActiveLink
+                  className="nav-link"
+                  href="/editor"
+                  activeClassName="active"
+                >
                   {" "}
                   <i className="ion-compose"></i>&nbsp;New Article{" "}
-                </a>
+                </ActiveLink>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" href="/settings">
+                <ActiveLink
+                  className="nav-link"
+                  href="/settings"
+                  activeClassName="active"
+                >
                   {" "}
                   <i className="ion-gear-a"></i>&nbsp;Settings{" "}
-                </Link>
+                </ActiveLink>
               </li>
               <li className="nav-item">
-                <a
+                <ActiveLink
                   className="nav-link ng-binding"
-                  ui-sref-active="active"
-                  href="#/@chivas23_01"
+                  activeClassName="active"
+                  href={`/profile/${session.user.name}`}
                 >
                   <img
                     className="user-pic"
                     src={session.user.image || DEFAULT_USER_IMG_URL}
                   />
                   {session.user.name}
-                </a>
+                </ActiveLink>
               </li>
             </>
           )}
           {!session && (
             <>
               <li className="nav-item">
-                <Link className="nav-link" href="/auth/login">
+                <ActiveLink
+                  className="nav-link"
+                  href="/auth/login"
+                  activeClassName="active"
+                >
                   Sign in
-                </Link>
+                </ActiveLink>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" href="/auth/register">
+                <ActiveLink
+                  className="nav-link"
+                  href="/auth/register"
+                  activeClassName="active"
+                >
                   Sign up
-                </Link>
+                </ActiveLink>
               </li>
             </>
           )}

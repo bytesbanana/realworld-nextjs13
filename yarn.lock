@@ -9,6 +9,11 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
+"@badrap/bar-of-progress@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/@badrap/bar-of-progress/-/bar-of-progress-0.2.2.tgz#4eb1a197f9727748cd9c9f5269339dd0bf6c1b0c"
+  integrity sha512-Ig7MdFQM3OA7Ror5UB1ZutXNZFwxh6YExZvcd6EZloOgcXUR8PKNLH2wUVoeh92NMPnPWr6J/l9Mp+f3z7O7MQ==
+
 "@next/env@13.1.1":
   version "13.1.1"
   resolved "https://registry.npmjs.org/@next/env/-/env-13.1.1.tgz#6ff26488dc7674ef2bfdd1ca28fe43eed1113bea"

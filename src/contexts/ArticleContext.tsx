@@ -1,13 +1,19 @@
 import { createContext, useState } from "react";
 
+type FeedType = "YOUR" | "GLOBAL" | "TAG";
+
 type ArticlesContextValue = {
+  currentFeedType: FeedType;
+  setFeedType: (feedType: FeedType) => void;
   selectedTag: string | null;
-  onSelectTag: (tag: string | null) => void;
+  setSelectTag: (tag: string | null) => void;
 };
 
 const defaultValue: ArticlesContextValue = {
+  currentFeedType: "GLOBAL",
+  setFeedType: () => {},
   selectedTag: null,
-  onSelectTag: () => {},
+  setSelectTag: () => {},
 };
 
 const ArticlesContext = createContext<ArticlesContextValue>(defaultValue);
@@ -15,11 +21,17 @@ interface Props {
   children: JSX.Element;
 }
 export const ArticlesContextProvider = ({ children }: Props) => {
-  const [selectedTag, setSelectTag] = useState<string | null>(null);
+  const [feedType, setFeedType] = useState<FeedType>("GLOBAL");
+  const [tag, setTag] = useState<string | null>(null);
 
   return (
     <ArticlesContext.Provider
-      value={{ selectedTag, onSelectTag: (tag) => setSelectTag(tag) }}
+      value={{
+        currentFeedType: feedType,
+        setFeedType: (feedType: FeedType) => setFeedType(feedType),
+        selectedTag: tag,
+        setSelectTag: (tag) => setTag(tag),
+      }}
     >
       {children}
     </ArticlesContext.Provider>
