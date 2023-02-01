@@ -40,11 +40,10 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/auth/login",
-    newUser: "/auth/regsiter"
+    newUser: "/auth/regsiter",
   },
   callbacks: {
     async jwt({ token, user }) {
-      console.log(user);
       if (user) {
         token.accessToken = user.accessToken;
         token.picture = user.image;
