@@ -20,7 +20,6 @@ Router.events.on("routeChangeComplete", progress.finish);
 Router.events.on("routeChangeError", progress.finish);
 
 const MyApp = ({ Component, pageProps }: MyAppProps) => {
-  console.log("AUTH: ", Component.auth);
   return (
     <PageContextProvider>
       <ArticlesContextProvider>
