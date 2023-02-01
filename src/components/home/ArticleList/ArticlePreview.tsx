@@ -1,10 +1,12 @@
 import dayjs from "dayjs";
+import ArticleAPI from "lib/api/article";
 import { Article } from "lib/types/articles";
 import { DEFAULT_USER_IMG_URL } from "lib/utils/constant";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { MouseEventHandler } from "react";
+import React, { MouseEventHandler, useState } from "react";
+import styles from "./ArticlePreview.module.css";
 
 interface Props {
   article: Article;
@@ -13,12 +15,30 @@ interface Props {
 const ArticlePreview = ({ article }: Props) => {
   const router = useRouter();
   const { data: session } = useSession();
+  const [favCount, setFavCout] = useState(article.favoritesCount);
+  const [isFav, setIsFav] = useState(article.favorited);
 
-  const handleToggleFavorite: MouseEventHandler = (e) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleToggleFavorite: MouseEventHandler = async (e) => {
     e.preventDefault();
     if (!session) {
       router.push("/auth/login");
       return;
+    }
+    setIsLoading(true);
+
+    const result = await ArticleAPI.setFavorite(
+      article.slug,
+      !isFav,
+      session.user.accessToken
+    );
+
+    setIsLoading(false);
+
+    if ("article" in result) {
+      setFavCout(result.article.favoritesCount);
+      setIsFav(result.article.favorited);
     }
   };
 
@@ -42,17 +62,31 @@ const ArticlePreview = ({ article }: Props) => {
         </div>
         <button
           className={`btn btn-outline-primary btn-sm pull-xs-right ${
-            article.favorited ? "active" : ""
+            isFav ? "active" : ""
           }`}
           onClick={handleToggleFavorite}
+          disabled={isLoading}
         >
-          <i className="ion-heart"></i> {article.favoritesCount}
+          <i
+            className={`ion-heart ${isLoading ? styles.spin : ""}`}
+            style={{ paddingRight: "2px" }}
+          ></i>
+
+          {favCount}
         </button>
       </div>
       <Link href={`/artcle/${article.slug}`} className="preview-link">
         <h1>{article.title}</h1>
         <p>{article.description}</p>
         <span>Read more...</span>
+
+        <ul className="tag-list">
+          {article.tagList.map((tag) => (
+            <li className="tag-default tag-pill tag-outline" key={tag}>
+              {tag}
+            </li>
+          ))}
+        </ul>
       </Link>
     </div>
   );

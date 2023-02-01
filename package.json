@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@badrap/bar-of-progress": "^0.2.2",
     "dayjs": "^1.11.7",
     "next": "latest",
     "next-auth": "^4.19.0",

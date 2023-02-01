@@ -6,6 +6,19 @@ import { SessionProvider, useSession } from "next-auth/react";
 import { PageContextProvider } from "contexts/PageContext";
 import { ArticlesContextProvider } from "contexts/ArticleContext";
 
+import ProgressBar from "@badrap/bar-of-progress";
+import { Router } from "next/router";
+
+const progress = new ProgressBar({
+  size: 5,
+  color: "#5cb85b",
+  className: "z-50",
+});
+
+Router.events.on("routeChangeStart", progress.start);
+Router.events.on("routeChangeComplete", progress.finish);
+Router.events.on("routeChangeError", progress.finish);
+
 const MyApp = ({ Component, pageProps }: MyAppProps) => {
   console.log("AUTH: ", Component.auth);
   return (

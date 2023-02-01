@@ -9,7 +9,7 @@ interface Props {
 }
 
 const TagList = ({ tags }: Props) => {
-  const { onSelectTag } = useContext(ArticleContext);
+  const { setFeedType, setSelectTag } = useContext(ArticleContext);
   const { resetPage } = useContext(PageContext);
 
   return (
@@ -24,7 +24,8 @@ const TagList = ({ tags }: Props) => {
               key={tag}
               onClick={(e) => {
                 e.preventDefault();
-                onSelectTag(tag);
+                setFeedType("TAG");
+                setSelectTag(tag);
                 resetPage();
               }}
             >

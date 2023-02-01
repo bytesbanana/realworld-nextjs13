@@ -13,17 +13,20 @@ const ArticleList = ({ articles, articlesCount }: Props) => {
   const { pageIndex } = useContext(PageContext);
 
   return (
-    <div>
+    <>
       {articles &&
         articlesCount > 0 &&
         articles.map((article) => (
           <ArticlePreview article={article} key={article.slug} />
         ))}
+      {articlesCount === 0 && (
+        <div className="article-preview">No articles are here... yet.</div>
+      )}
       <PaginationList
         pageIndex={pageIndex}
         totalPages={Math.ceil(articlesCount / 10)}
       />
-    </div>
+    </>
   );
 };
 
