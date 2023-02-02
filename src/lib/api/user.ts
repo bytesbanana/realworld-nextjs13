@@ -1,9 +1,6 @@
-import axios from "axios";
 import { ErrorsResponse } from "lib/types/common";
 import { UserResponse } from "lib/types/user";
 import { API_BASE_URL } from "lib/utils/constant";
-import { json } from "stream/consumers";
-import { mergeObjects } from "swr/_internal";
 
 const UserAPI = {
   login: async (email: string, password: string): Promise<UserResponse> => {
