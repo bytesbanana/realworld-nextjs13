@@ -55,13 +55,21 @@ const Settings = ({ session, currentUser }: Props) => {
 
   const handleFormSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
-    setDisableForm(true);
-    try {
-      const user = form;
-      if (user.password?.length === 0) delete user.password;
-      const result = await UserAPI.update(user, session.accessToken);
-    } finally {
-      setDisableForm(false);
+    if (confirm("After update your settings must login again are you sure?")) {
+      setDisableForm(true);
+      try {
+        const user = form;
+
+        const result = await UserAPI.update(user, session.accessToken);
+        if ("user" in result) {
+          await signOut({
+            redirect: false,
+          });
+          router.push("/auth/login");
+        }
+      } finally {
+        setDisableForm(false);
+      }
     }
   };
 
