@@ -42,7 +42,7 @@ const Home = ({ tags }: Props) => {
     isLoading: loadingArticles,
     error: errorLoadArticles,
   } = useSWR<ArticlesResponse>(
-    [`${fetchUrl}?${searchParams.toString()}`, session?.user.accessToken],
+    [`${fetchUrl}?${searchParams.toString()}`, session?.accessToken],
     ([url, token]) => restFetcher(url, token)
   );
 
