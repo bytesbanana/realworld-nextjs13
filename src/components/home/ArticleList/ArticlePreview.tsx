@@ -31,7 +31,7 @@ const ArticlePreview = ({ article }: Props) => {
     const result = await ArticleAPI.setFavorite(
       article.slug,
       !isFav,
-      session.user.accessToken
+      session.accessToken
     );
 
     setIsLoading(false);
