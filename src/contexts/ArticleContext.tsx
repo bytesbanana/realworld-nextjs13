@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import type { ReactNode } from "react";
 
 type FeedType = "YOUR" | "GLOBAL" | "TAG";
 
@@ -18,8 +19,9 @@ const defaultValue: ArticlesContextValue = {
 
 const ArticlesContext = createContext<ArticlesContextValue>(defaultValue);
 interface Props {
-  children: JSX.Element;
+  children: ReactNode;
 }
+
 export const ArticlesContextProvider = ({ children }: Props) => {
   const [feedType, setFeedType] = useState<FeedType>("GLOBAL");
   const [tag, setTag] = useState<string | null>(null);

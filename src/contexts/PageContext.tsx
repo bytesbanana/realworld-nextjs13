@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import type { ReactNode } from "react";
 
 type PageContextValue = {
   pageIndex: number;
@@ -15,7 +16,7 @@ const defaultValue = {
 const PageContext = createContext<PageContextValue>(defaultValue);
 
 interface Props {
-  children: JSX.Element;
+  children: ReactNode;
 }
 
 export const PageContextProvider = ({ children }: Props) => {

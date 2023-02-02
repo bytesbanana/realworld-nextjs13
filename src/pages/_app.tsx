@@ -1,4 +1,3 @@
-//@ts-ignore
 import React from "react";
 import Layout from "components/Layout";
 import { MyAppProps } from "next/app";
@@ -21,9 +20,9 @@ Router.events.on("routeChangeError", progress.finish);
 
 const MyApp = ({ Component, pageProps }: MyAppProps) => {
   return (
-    <PageContextProvider>
-      <ArticlesContextProvider>
-        <SessionProvider session={pageProps.session}>
+    <SessionProvider session={pageProps.session}>
+      <PageContextProvider>
+        <ArticlesContextProvider>
           <Layout>
             {Component?.auth ? (
               <Auth>
@@ -33,17 +32,17 @@ const MyApp = ({ Component, pageProps }: MyAppProps) => {
               <Component {...pageProps} />
             )}
           </Layout>
-        </SessionProvider>
-      </ArticlesContextProvider>
-    </PageContextProvider>
+        </ArticlesContextProvider>
+      </PageContextProvider>
+    </SessionProvider>
   );
 };
 
 interface AuthProps {
   children: JSX.Element;
 }
+
 function Auth({ children }: AuthProps) {
-  // if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"
   const { status } = useSession({ required: true });
 
   if (status === "loading") {
