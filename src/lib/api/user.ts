@@ -1,3 +1,4 @@
+import axios from "axios";
 import { ErrorsResponse } from "lib/types/common";
 import { UserResponse } from "lib/types/user";
 import { API_BASE_URL } from "lib/utils/constant";
@@ -68,15 +69,14 @@ const UserAPI = {
   },
   currentUser: async (token: string) => {
     const res = await fetch(`${API_BASE_URL}/user`, {
-      method: "GEt",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },
     });
-
+    console.log(res.headers.get("Authorization"));
     const data = await res.json();
-
     if (res.ok) return data as UserResponse;
     return data as ErrorsResponse;
   },

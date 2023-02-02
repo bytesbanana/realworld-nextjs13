@@ -1,7 +1,6 @@
 import { ArticleContext } from "contexts/ArticleContext";
 import { PageContext } from "contexts/PageContext";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import React, { useContext } from "react";
 
 const FeedToggle = () => {

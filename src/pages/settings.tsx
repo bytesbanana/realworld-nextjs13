@@ -1,12 +1,68 @@
-import { signOut } from "next-auth/react";
+import { GetServerSidePropsContext } from "next";
+import { getServerSession, Session } from "next-auth";
+import { useSession, signOut, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, {
+  ChangeEventHandler,
+  FormEventHandler,
+  use,
+  useState,
+} from "react";
+import { authOptions } from "./api/auth/[...nextauth]";
+import { User, UserResponse } from "lib/types/user";
+import UserAPI from "lib/api/user";
 
-const Settings = () => {
+interface FormData {
+  email: string;
+  username: string;
+  bio?: string;
+  image?: string;
+  password?: string;
+}
+
+interface Props {
+  session: Session;
+  currentUser: User;
+}
+
+const Settings = ({ session, currentUser }: Props) => {
   const router = useRouter();
+  const [disableForm, setDisableForm] = useState(false);
+  const {} = useSession();
+
+  const [form, setForm] = useState<FormData>({
+    username: currentUser.username,
+    email: currentUser.email,
+    bio: currentUser.bio,
+    image: currentUser.image,
+    password: "",
+  });
+
   const handleLogout = async () => {
     await signOut({ redirect: false });
     router.push("/");
+  };
+
+  const handleInputChange: ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  > = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+
+  const handleFormSubmit: FormEventHandler = async (e) => {
+    e.preventDefault();
+    setDisableForm(true);
+    try {
+      const user = form;
+      if (user.password?.length === 0) delete user.password;
+      const result = await UserAPI.update(user, session.accessToken);
+    } finally {
+      setDisableForm(false);
+    }
   };
 
   return (
@@ -16,13 +72,17 @@ const Settings = () => {
           <div className="col-md-6 offset-md-3 col-xs-12">
             <h1 className="text-xs-center">Your Settings</h1>
 
-            <form>
+            <form onSubmit={handleFormSubmit}>
               <fieldset>
                 <fieldset className="form-group">
                   <input
                     className="form-control"
                     type="text"
                     placeholder="URL of profile picture"
+                    name="image"
+                    value={form?.image}
+                    onChange={handleInputChange}
+                    disabled={disableForm}
                   />
                 </fieldset>
                 <fieldset className="form-group">
@@ -30,6 +90,10 @@ const Settings = () => {
                     className="form-control form-control-lg"
                     type="text"
                     placeholder="Your Name"
+                    name="username"
+                    value={form?.username}
+                    onChange={handleInputChange}
+                    disabled={disableForm}
                   />
                 </fieldset>
                 <fieldset className="form-group">
@@ -37,6 +101,10 @@ const Settings = () => {
                     className="form-control form-control-lg"
                     rows={8}
                     placeholder="Short bio about you"
+                    name="bio"
+                    value={form?.bio}
+                    onChange={handleInputChange}
+                    disabled={disableForm}
                   ></textarea>
                 </fieldset>
                 <fieldset className="form-group">
@@ -44,6 +112,10 @@ const Settings = () => {
                     className="form-control form-control-lg"
                     type="text"
                     placeholder="Email"
+                    name="email"
+                    value={form?.email}
+                    onChange={handleInputChange}
+                    disabled={disableForm}
                   />
                 </fieldset>
                 <fieldset className="form-group">
@@ -51,9 +123,16 @@ const Settings = () => {
                     className="form-control form-control-lg"
                     type="password"
                     placeholder="Password"
+                    name="password"
+                    value={form?.password}
+                    onChange={handleInputChange}
+                    disabled={disableForm}
                   />
                 </fieldset>
-                <button className="btn btn-lg btn-primary pull-xs-right">
+                <button
+                  className="btn btn-lg btn-primary pull-xs-right"
+                  type="submit"
+                >
                   Update Settings
                 </button>
               </fieldset>
@@ -72,5 +151,27 @@ const Settings = () => {
     </div>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  if (!session || !session.accessToken) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+
+  const result = await UserAPI.currentUser(session?.accessToken);
+  const userRes = result as UserResponse;
+
+  return {
+    props: {
+      session,
+      currentUser: userRes.user,
+    },
+  };
+}
 
 export default Settings;

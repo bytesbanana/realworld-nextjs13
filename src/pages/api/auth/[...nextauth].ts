@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         return {
-          id: "",
+          id: user.email,
           name: user.username,
           accessToken: user.token,
           image: user.image,
@@ -47,14 +47,12 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.accessToken = user.accessToken;
         token.picture = user.image;
-        token.bio = user.bio;
       }
       return token;
     },
 
     async session({ session, token }) {
-      session.user.accessToken = token.accessToken;
-      session.user.bio = token.bio;
+      session.accessToken = token.accessToken;
       return session;
     },
   },

@@ -6,7 +6,7 @@ import ActiveLink from "./ActiveLink";
 
 const Header = () => {
   const { data: session } = useSession();
-
+  console.log("HEADER", session);
   return (
     <nav className="navbar navbar-light">
       <div className="container">
@@ -46,13 +46,13 @@ const Header = () => {
                 <ActiveLink
                   className="nav-link ng-binding"
                   activeClassName="active"
-                  href={`/profile/${session.user.name}`}
+                  href={`/profile/${session.user?.name}`}
                 >
                   <img
                     className="user-pic"
-                    src={session.user.image || DEFAULT_USER_IMG_URL}
+                    src={session.user?.image || DEFAULT_USER_IMG_URL}
                   />
-                  {session.user.name}
+                  {session.user?.name}
                 </ActiveLink>
               </li>
             </>
