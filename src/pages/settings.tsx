@@ -182,4 +182,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   };
 }
 
+Settings.auth = true;
+
 export default Settings;

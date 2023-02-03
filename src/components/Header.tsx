@@ -6,7 +6,7 @@ import ActiveLink from "./ActiveLink";
 
 const Header = () => {
   const { data: session } = useSession();
-  console.log("HEADER", session);
+
   return (
     <nav className="navbar navbar-light">
       <div className="container">
