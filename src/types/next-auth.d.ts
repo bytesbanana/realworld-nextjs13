@@ -1,4 +1,4 @@
-import { User } from "./../lib/types/user";
+import type { User } from "./../lib/types/user";
 import type { Session } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 

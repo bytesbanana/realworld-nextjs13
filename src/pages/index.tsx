@@ -8,7 +8,7 @@ import ArticleList from "components/home/ArticleList";
 import useSWR from "swr";
 import { API_BASE_URL } from "lib/utils/constant";
 import { restFetcher } from "lib/fetcher/rest";
-import { ArticlesResponse } from "lib/types/articles";
+import type { ArticlesResponse } from "lib/types/articles";
 import { PageContext } from "contexts/PageContext";
 import { ArticleContext } from "contexts/ArticleContext";
 

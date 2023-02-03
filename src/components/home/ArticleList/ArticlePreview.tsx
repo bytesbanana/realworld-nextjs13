@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import ArticleAPI from "lib/api/article";
-import { Article } from "lib/types/articles";
 import { DEFAULT_USER_IMG_URL } from "lib/utils/constant";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -8,6 +7,7 @@ import { useRouter } from "next/router";
 import React, { MouseEventHandler, useState } from "react";
 import styles from "./ArticlePreview.module.css";
 
+import type { Article } from "lib/types/articles";
 interface Props {
   article: Article;
 }

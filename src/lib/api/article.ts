@@ -1,6 +1,8 @@
-import { ErrorsResponse } from "lib/types/common";
 import { ArticleResponse } from "./../types/articles";
 import { API_BASE_URL } from "./../utils/constant";
+
+import type { ErrorsResponse } from "lib/types/common";
+
 const ArticleAPI = {
   setFavorite: async (
     slug: string,

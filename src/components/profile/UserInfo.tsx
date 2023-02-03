@@ -1,10 +1,10 @@
 import React, { MouseEventHandler, useState } from "react";
 import Link from "next/link";
-
-import type { Profile } from "lib/types/profile";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import ProfileAPI from "lib/api/profile";
+
+import type { Profile } from "lib/types/profile";
 
 interface Props {
   profile: Profile;

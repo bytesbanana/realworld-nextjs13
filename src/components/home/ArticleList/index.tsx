@@ -1,8 +1,8 @@
 import { PageContext } from "contexts/PageContext";
-import { Article } from "lib/types/articles";
 import React, { useContext } from "react";
 import ArticlePreview from "./ArticlePreview";
 import PaginationList from "./PaginationList";
+import type { Article } from "lib/types/articles";
 
 interface Props {
   articles?: Article[];
