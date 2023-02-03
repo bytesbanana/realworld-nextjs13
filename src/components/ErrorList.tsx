@@ -1,5 +1,5 @@
 import React from "react";
-import { CommonErrors } from "lib/types/common";
+import type { CommonErrors } from "lib/types/common";
 
 interface Props {
   errors?: CommonErrors;

@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 import { authOptions } from "./api/auth/[...nextauth]";
-import { User, UserResponse } from "lib/types/user";
+import type { User, UserResponse } from "lib/types/user";
 import UserAPI from "lib/api/user";
 
 interface FormData {

@@ -1,5 +1,5 @@
-import { ErrorsResponse } from "lib/types/common";
-import { UserResponse } from "lib/types/user";
+import type { ErrorsResponse } from "lib/types/common";
+import type { UserResponse } from "lib/types/user";
 import { API_BASE_URL } from "lib/utils/constant";
 
 const UserAPI = {
