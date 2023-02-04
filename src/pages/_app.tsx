@@ -7,6 +7,7 @@ import { ArticlesContextProvider } from "contexts/ArticleContext";
 
 import ProgressBar from "@badrap/bar-of-progress";
 import { Router } from "next/router";
+import { ProfileProvider } from "contexts/ProfileContex";
 
 const progress = new ProgressBar({
   size: 5,
@@ -22,17 +23,19 @@ const MyApp = ({ Component, pageProps }: MyAppProps) => {
   return (
     <SessionProvider session={pageProps.session}>
       <PageContextProvider>
-        <ArticlesContextProvider>
-          <Layout>
-            {Component?.auth ? (
-              <Auth>
+        <ProfileProvider>
+          <ArticlesContextProvider>
+            <Layout>
+              {Component?.auth ? (
+                <Auth>
+                  <Component {...pageProps} />
+                </Auth>
+              ) : (
                 <Component {...pageProps} />
-              </Auth>
-            ) : (
-              <Component {...pageProps} />
-            )}
-          </Layout>
-        </ArticlesContextProvider>
+              )}
+            </Layout>
+          </ArticlesContextProvider>
+        </ProfileProvider>
       </PageContextProvider>
     </SessionProvider>
   );

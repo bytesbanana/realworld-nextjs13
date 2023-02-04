@@ -1,21 +1,55 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+
 import UserInfo from "components/profile/UserInfo";
-import { getSession, useSession } from "next-auth/react";
 import ArticleToggle from "components/profile/ArticleToggle";
+import { authOptions } from "pages/api/auth/[...nextauth]";
+import { ProfileContext } from "contexts/ProfileContex";
 import ProfileAPI from "lib/api/profile";
+import useSWR from "swr";
 
 import type { GetServerSidePropsContext } from "next";
 import type { Profile } from "lib/types/profile";
-import Header from "components/Header";
-import { getServerSession } from "next-auth";
-import { authOptions } from "pages/api/auth/[...nextauth]";
+import { API_BASE_URL } from "lib/utils/constant";
+import { PageContext } from "contexts/PageContext";
+import type { ArticlesResponse } from "lib/types/articles";
+import { restFetcher } from "lib/fetcher/rest";
+import { useRouter } from "next/router";
+import ArticleList from "components/ArticleList";
 
 interface Props {
   profile: Profile;
 }
 
+const ARTICLE_LIMIT = 5;
+
 const Profile = ({ profile }: Props) => {
+  const router = useRouter();
   const { data: session } = useSession();
+  const { articleType } = useContext(ProfileContext);
+  const { pageIndex, setPageIndex } = useContext(PageContext);
+  const { username } = router.query;
+
+  const isMyArticle = articleType === "MY_ARTICLES";
+  const paramObj: Record<string, any> = {
+    limit: ARTICLE_LIMIT.toString(),
+    offset: ((pageIndex - 1) * ARTICLE_LIMIT).toString(),
+    [isMyArticle ? "author" : "favorited"]: username,
+  };
+  const searchParams = new URLSearchParams(paramObj);
+
+  const { data, isLoading } = useSWR<ArticlesResponse>(
+    [
+      `${API_BASE_URL}/articles?${searchParams.toString()}`,
+      session?.accessToken,
+    ],
+    ([url, token]) => restFetcher(url, token)
+  );
+
+  useEffect(() => {
+    setPageIndex(1);
+  }, []);
 
   return (
     <div className="profile-page">
@@ -24,57 +58,16 @@ const Profile = ({ profile }: Props) => {
         <div className="row">
           <div className="col-xs-12 col-md-10 offset-md-1">
             <ArticleToggle />
-
-            <div className="article-preview">
-              <div className="article-meta">
-                <a href="">
-                  <img src="http://i.imgur.com/Qr71crq.jpg" />
-                </a>
-                <div className="info">
-                  <a href="" className="author">
-                    Eric Simons
-                  </a>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 29
-                </button>
-              </div>
-              <a href="" className="preview-link">
-                <h1>How to build webapps that scale</h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-              </a>
-            </div>
-
-            <div className="article-preview">
-              <div className="article-meta">
-                <a href="">
-                  <img src="http://i.imgur.com/N4VcUeJ.jpg" />
-                </a>
-                <div className="info">
-                  <a href="" className="author">
-                    Albert Pai
-                  </a>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 32
-                </button>
-              </div>
-              <a href="" className="preview-link">
-                <h1>
-                  The song you won't ever stop singing. No matter how hard you
-                  try.
-                </h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-                <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">Music</li>
-                  <li className="tag-default tag-pill tag-outline">Song</li>
-                </ul>
-              </a>
-            </div>
+            {!isLoading && (
+              <>
+                {data?.articles && (
+                  <ArticleList
+                    articles={data.articles}
+                    articlesCount={data.articlesCount}
+                  />
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
