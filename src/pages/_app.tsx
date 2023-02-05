@@ -4,7 +4,6 @@ import { MyAppProps } from "next/app";
 import { SessionProvider, useSession } from "next-auth/react";
 import { PageContextProvider } from "contexts/PageContext";
 import { ArticlesContextProvider } from "contexts/ArticleContext";
-
 import ProgressBar from "@badrap/bar-of-progress";
 import { Router } from "next/router";
 import { ProfileProvider } from "contexts/ProfileContex";
