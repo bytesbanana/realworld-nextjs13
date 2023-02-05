@@ -1,16 +1,12 @@
 import { GetServerSidePropsContext } from "next";
 import { getServerSession, Session } from "next-auth";
-import { useSession, signOut, signIn } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, {
-  ChangeEventHandler,
-  FormEventHandler,
-  use,
-  useState,
-} from "react";
+import React, { ChangeEventHandler, FormEventHandler, useState } from "react";
 import { authOptions } from "./api/auth/[...nextauth]";
 import type { User, UserResponse } from "lib/types/user";
 import UserAPI from "lib/api/user";
+import ErrorList from "components/ErrorList";
 
 interface FormData {
   email: string;
@@ -28,7 +24,7 @@ interface Props {
 const Settings = ({ session, currentUser }: Props) => {
   const router = useRouter();
   const [disableForm, setDisableForm] = useState(false);
-  const {} = useSession();
+  const [isSubmitError, setIsSubmitError] = useState(false);
 
   const [form, setForm] = useState<FormData>({
     username: currentUser.username,
@@ -55,6 +51,7 @@ const Settings = ({ session, currentUser }: Props) => {
 
   const handleFormSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
+    setIsSubmitError(false);
     if (confirm("After update your settings must login again are you sure?")) {
       setDisableForm(true);
       try {
@@ -66,6 +63,8 @@ const Settings = ({ session, currentUser }: Props) => {
             redirect: false,
           });
           router.push("/auth/login");
+        } else {
+          setIsSubmitError(true);
         }
       } finally {
         setDisableForm(false);
@@ -79,7 +78,13 @@ const Settings = ({ session, currentUser }: Props) => {
         <div className="row">
           <div className="col-md-6 offset-md-3 col-xs-12">
             <h1 className="text-xs-center">Your Settings</h1>
-
+            {isSubmitError && (
+              <ErrorList
+                errors={{
+                  "Error:": [" failed to update settings."],
+                }}
+              />
+            )}
             <form onSubmit={handleFormSubmit}>
               <fieldset>
                 <fieldset className="form-group">
