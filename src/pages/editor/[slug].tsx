@@ -19,7 +19,7 @@ const UpdateArticle = ({ article }: Props) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [errors, setErrors] = useState<CommonErrors | null>(null);
-  const { slug } = router.query;
+  const { slug } = router.query as { slug: string };
 
   const handleOnSubmit = async (formData: EditorFormData) => {
     if (session?.accessToken) {
