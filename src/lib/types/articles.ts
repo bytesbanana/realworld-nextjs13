@@ -26,3 +26,5 @@ export type Author = {
   image?: string;
   following: boolean;
 };
+
+export type EditorMode = "NEW" | "UPDATE";

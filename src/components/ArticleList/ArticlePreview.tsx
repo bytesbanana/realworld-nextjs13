@@ -8,6 +8,7 @@ import React, { MouseEventHandler, useState } from "react";
 import styles from "./ArticlePreview.module.css";
 
 import type { Article } from "lib/types/articles";
+
 interface Props {
   article: Article;
 }
