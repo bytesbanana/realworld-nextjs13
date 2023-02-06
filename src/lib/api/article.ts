@@ -12,7 +12,7 @@ const ArticleAPI = {
     slug: string,
     favorite: boolean,
     token: string
-  ): Promise<ArticleResponse | ErrorsResponse> => {
+  ): Promise<ArticleResponse | null> => {
     const res = await fetch(`${API_BASE_URL}/articles/${slug}/favorite`, {
       method: favorite ? "POST" : "DELETE",
       headers: {
@@ -24,7 +24,7 @@ const ArticleAPI = {
     const data = await res.json();
     if (res.ok) return data as ArticleResponse;
 
-    return data as ErrorsResponse;
+    return null;
   },
   create: async (
     article: {
@@ -85,7 +85,7 @@ const ArticleAPI = {
     if (res.ok) {
       return data as ArticleResponse;
     }
-    return data as ErrorsResponse;
+    return null;
   },
 };
 

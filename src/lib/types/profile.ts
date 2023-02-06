@@ -1,5 +1,5 @@
 export interface ProfileResponse {
-  profile?: Profile;
+  profile: Profile;
 }
 
 export interface Profile {

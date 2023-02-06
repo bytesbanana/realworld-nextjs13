@@ -16,7 +16,7 @@ import { PageContext } from "contexts/PageContext";
 import type { ArticlesResponse } from "lib/types/articles";
 import { restFetcher } from "lib/fetcher/rest";
 import { useRouter } from "next/router";
-import ArticleList from "components/ArticleList";
+import ArticleList from "components/common/ArticleList";
 
 interface Props {
   profile: Profile;

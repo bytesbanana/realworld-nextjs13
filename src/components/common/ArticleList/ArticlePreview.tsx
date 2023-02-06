@@ -37,7 +37,7 @@ const ArticlePreview = ({ article }: Props) => {
 
     setIsLoading(false);
 
-    if ("article" in result) {
+    if (result) {
       setFavCout(result.article.favoritesCount);
       setIsFav(result.article.favorited);
     }
@@ -76,7 +76,7 @@ const ArticlePreview = ({ article }: Props) => {
           {favCount}
         </button>
       </div>
-      <Link href={`/artcle/${article.slug}`} className="preview-link">
+      <Link href={`/article/${article.slug}`} className="preview-link">
         <h1>{article.title}</h1>
         <p>{article.description}</p>
         <span>Read more...</span>

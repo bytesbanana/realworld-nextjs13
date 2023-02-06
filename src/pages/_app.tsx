@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "components/Layout";
+import Layout from "components/common/Layout";
 import { MyAppProps } from "next/app";
 import { SessionProvider, useSession } from "next-auth/react";
 import { PageContextProvider } from "contexts/PageContext";

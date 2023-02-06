@@ -4,7 +4,7 @@ import Banner from "components/home/Banner";
 import FeedToggle from "components/home/FeedToggle";
 import Sidebar from "components/home/Sidebar";
 import TagAPI from "lib/api/tag";
-import ArticleList from "components/ArticleList";
+import ArticleList from "components/common/ArticleList";
 import useSWR from "swr";
 import { API_BASE_URL } from "lib/utils/constant";
 import { restFetcher } from "lib/fetcher/rest";

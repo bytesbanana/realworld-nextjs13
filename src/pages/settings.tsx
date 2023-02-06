@@ -6,7 +6,7 @@ import React, { ChangeEventHandler, FormEventHandler, useState } from "react";
 import { authOptions } from "./api/auth/[...nextauth]";
 import type { User, UserResponse } from "lib/types/user";
 import UserAPI from "lib/api/user";
-import ErrorList from "components/ErrorList";
+import ErrorList from "components/common/ErrorList";
 
 interface FormData {
   email: string;
