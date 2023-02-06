@@ -1,6 +1,7 @@
 import React from "react";
 import type { Article } from "lib/types/articles";
 import dayjs from "dayjs";
+import Link from "next/link";
 
 interface Props {
   article: Article;
@@ -22,13 +23,13 @@ const Actions = ({
   return (
     <div className="article-actions">
       <div className="article-meta">
-        <a href="profile.html">
+        <Link href={"/profile/" + article.author.username}>
           <img src={article.author.image} />
-        </a>
+        </Link>
         <div className="info">
-          <a href="" className="author">
+          <Link href={"/profile/" + article.author.username} className="author">
             {article.author.username}
-          </a>
+          </Link>
           <span className="date">
             {dayjs(article.createdAt).format("MMMM DD, YYYY")}
           </span>

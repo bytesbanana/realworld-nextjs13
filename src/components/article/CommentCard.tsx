@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import Link from "next/link";
 import React from "react";
 import type { Comment } from "../../lib/types/comment";
 
@@ -15,13 +16,19 @@ const CommentCard = ({ comment, onDeleteComment, enableDelete }: Props) => {
         <p className="card-text">{comment.body}</p>
       </div>
       <div className="card-footer">
-        <a href="" className="comment-author">
+        <Link
+          href={"/profile/" + comment.author.username}
+          className="comment-author"
+        >
           <img src={comment.author.image} className="comment-author-img" />
-        </a>
+        </Link>
         &nbsp;
-        <a href="" className="comment-author">
+        <Link
+          href={"/profile/" + comment.author.username}
+          className="comment-author"
+        >
           {comment.author.username}
-        </a>
+        </Link>
         <span className="date-posted">
           {dayjs(comment.createAt).format("MMMM DD, YYYY")}
         </span>

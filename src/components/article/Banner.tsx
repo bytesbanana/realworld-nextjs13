@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { Article } from "lib/types/articles";
+import Link from "next/link";
 
 interface Props {
   article: Article;
@@ -48,13 +49,16 @@ const Banner = ({
         <h1>{article?.title}</h1>
 
         <div className="article-meta">
-          <a href="">
+          <Link href={"/profile/" + article.author.username}>
             <img src={article.author.image} alt={article.author.username} />
-          </a>
+          </Link>
           <div className="info">
-            <a href="" className="author">
+            <Link
+              href={"/profile/" + article.author.username}
+              className="author"
+            >
               {article.author.username}
-            </a>
+            </Link>
             <span className="date">
               {dayjs(article.createdAt).format("MMMM DD, YYYY")}
             </span>
