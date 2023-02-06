@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { CommonErrors, ErrorsResponse } from "lib/types/common";
-import ErrorList from "components/ErrorList";
+import ErrorList from "components/common/ErrorList";
 import UserAPI from "lib/api/user";
 
 type InputChangeEvent = React.ChangeEvent<HTMLInputElement>;

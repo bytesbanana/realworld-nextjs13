@@ -1,13 +1,13 @@
-import Editor from "components/Editor";
+import Editor from "components/common/Editor";
 import { useSession } from "next-auth/react";
 
 import ArticleAPI from "lib/api/article";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import ErrorList from "components/ErrorList";
+import ErrorList from "components/common/ErrorList";
 
 import type { CommonErrors } from "lib/types/common";
-import type { EditorFormData } from "components/Editor";
+import type { EditorFormData } from "components/common/Editor";
 import type { GetServerSidePropsContext } from "next";
 import type { Article } from "lib/types/articles";
 
@@ -63,7 +63,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { slug } = context.query as { slug: string };
 
   const result = await ArticleAPI.getBySlug(slug);
-  if ("article" in result) {
+  if (result) {
     return {
       props: {
         article: result.article,

@@ -1,12 +1,12 @@
-import Editor from "components/Editor";
+import Editor from "components/common/Editor";
 import { useSession } from "next-auth/react";
 
-import type { EditorFormData } from "components/Editor";
+import type { EditorFormData } from "components/common/Editor";
 import ArticleAPI from "lib/api/article";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { CommonErrors } from "lib/types/common";
-import ErrorList from "components/ErrorList";
+import ErrorList from "components/common/ErrorList";
 
 const NewArticle = () => {
   const router = useRouter();
